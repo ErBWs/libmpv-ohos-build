@@ -1,0 +1,48 @@
+diff --git a/meson.build b/meson.build
+index a56bb1f37c..7cd3b195f9 100644
+--- a/meson.build
++++ b/meson.build
+@@ -23,6 +23,9 @@ libavutil = dependency('libavutil', version: '>= 56.70.100')
+ libswresample = dependency('libswresample', version: '>= 3.9.100')
+ libswscale = dependency('libswscale', version: '>= 5.9.100')
+ 
++# fftools-ffi
++libfftools_ffi = dependency('fftools-ffi')
++
+ libass = dependency('libass', version: '>= 0.12.2')
+ 
+ # the dependency order of libass -> ffmpeg is necessary due to
+@@ -33,7 +36,8 @@ dependencies = [libass,
+                 libavformat,
+                 libavutil,
+                 libswresample,
+-                libswscale]
++                libswscale,
++                libfftools_ffi]
+ 
+ # Keeps track of all enabled/disabled features
+ features = {
+@@ -244,7 +248,10 @@ sources = files(
+     ## tree_allocator
+     'ta/ta.c',
+     'ta/ta_talloc.c',
+-    'ta/ta_utils.c'
++    'ta/ta_utils.c',
++
++    ## fftools-ffi hack
++    'fftools-ffi.c'
+ )
+ 
+ 
+diff --git a/fftools-ffi.c b/fftools-ffi.c
+new file mode 100644
+index 0000000..6cd4258
+--- /dev/null
++++ b/fftools-ffi.c
+@@ -0,0 +1,6 @@
++#include "fftools-ffi/dart_api.h"
++
++void* a = FFToolsFFIInitialize;
++void* b = FFToolsFFIExecuteFFmpeg;
++void* c = FFToolsFFIExecuteFFprobe;
++void* d = FFToolsCancel;

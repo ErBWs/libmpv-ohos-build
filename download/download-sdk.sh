@@ -18,6 +18,7 @@ do
 done
 
 # Export compile variables
+export OHOS_SDK=$HOME/libmpv/sdk/ohos-sdk/linux
 export OHOS_NDK_HOME=$HOME/libmpv/sdk/ohos-sdk/linux
 export PATH=${OHOS_NDK_HOME}/native/build-tools/cmake/bin:$PATH
 export AS=${OHOS_NDK_HOME}/native/llvm/bin/llvm-as
