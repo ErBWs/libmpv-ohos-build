@@ -4,6 +4,8 @@ set -eu
 
 . ./dep-versions.sh
 
+mkdir -p $HOME/libmpv/build
+
 # Download OpenHarmony SDK
 mkdir -p $HOME/libmpv/sdk
 cd $HOME/libmpv/sdk
@@ -14,7 +16,7 @@ tar -zxvf ohos-sdk-windows_linux-public.tar.gz
 cd ohos-sdk/linux
 for i in *.zip
 do
-    unzip -q $i
+  unzip -q $i
 done
 
 # Export compile variables
