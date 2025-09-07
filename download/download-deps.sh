@@ -2,7 +2,7 @@
 
 set -eu
 
-. ./dep-versions.sh
+. ./download/deps-version.sh
 
 cd $HOME/libmpv
 
