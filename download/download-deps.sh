@@ -7,7 +7,12 @@ set -eu
 cd $HOME/libmpv
 
 # mbedtls
-[ ! -d mbedtls ] && git clone --depth 1 -b $V_MBEDTLS https://github.com/Mbed-TLS/mbedtls.git mbedtls
+if [ ! -d mbedtls ]; then
+	mkdir mbedtls
+	curl -fsSL https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-$V_MBEDTLS/mbedtls-$V_MBEDTLS.tar.bz2 > mbedtls.tar.bz2
+  tar -C mbedtls --strip-components=1 -jxf mbedtls.tar.bz2
+  rm mbedtls.tar.bz2
+fi
 
 # dav1d
 [ ! -d dav1d ] && git clone --depth 1 -b $V_DAV1D https://code.videolan.org/videolan/dav1d.git dav1d

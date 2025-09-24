@@ -6,7 +6,7 @@ set -eu
 V_SDK=5.1.0-Release
 
 # FFmpeg
-V_MBEDTLS=v3.6.4
+V_MBEDTLS=3.6.4
 V_DAV1D=1.5.1
 V_LIBXML2=v2.14.5
 

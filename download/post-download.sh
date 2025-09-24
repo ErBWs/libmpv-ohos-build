@@ -2,7 +2,7 @@
 
 set -eu
 
-export DEST=$HOME/libmpv/arm64_build
+export DEST=$HOME/libmpv/arm64-build
 mkdir -p $DEST
 
 export OHOS_SDK=$HOME/libmpv/sdk/ohos-sdk/linux
