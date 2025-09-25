@@ -14,6 +14,6 @@ else
 fi
 
 make -j$CORES no_test
-make DESTDIR=$DEST install
+make DESTDIR=$DEST/mbedtls install
 
 popd

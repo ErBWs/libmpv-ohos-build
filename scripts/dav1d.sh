@@ -19,11 +19,11 @@ cd .build
 
 meson setup .. \
   --cross-file $GITHUB_ACTION_PATH/crossfiles/arm64-crossfile.ini \
-  --default-library=static \
+  --prefix=$DEST/dav1d \
   -Db_lto=true \
   -Denable_tests=false \
   -Denable_tools=false
 ninja -j$CORES
-DESTDIR=$DEST/dav1d ninja install
+ninja install
 
 popd

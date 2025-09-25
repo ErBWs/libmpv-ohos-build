@@ -5,14 +5,16 @@ set -eu
 . ./download/deps-version.sh
 
 # Download OpenHarmony SDK
-mkdir -p $HOME/libmpv/sdk
-cd $HOME/libmpv/sdk
-curl -fsSL https://repo.huaweicloud.com/openharmony/os/${V_SDK}/ohos-sdk-windows_linux-public.tar.gz
-tar -zxf ohos-sdk-windows_linux-public.tar.gz
+cd /
+sudo curl -fsSL https://repo.huaweicloud.com/openharmony/os/${V_SDK}/ohos-sdk-windows_linux-public.tar.gz
+sudo mkdir -p sdk
+sudo tar -C sdk --strip-components=1 -zxf ohos-sdk-windows_linux-public.tar.gz
+sudo rm ohos-sdk-windows_linux-public.tar.gz
 
 # Extract NDK
-cd ohos-sdk/linux
+cd sdk/linux
 for i in *.zip
 do
-  unzip -q $i
+  sudo unzip -q $i
+  sudo rm $i
 done
