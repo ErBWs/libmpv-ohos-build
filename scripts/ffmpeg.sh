@@ -17,24 +17,30 @@ mkdir -p .build
 cd .build
 
 ../configure \
-  --prefix=$DEST/ffmpeg \
+  --prefix=$DEST \
   --arch=aarch64 \
   --cpu=armv8-a \
   --target-os=linux \
   --enable-static \
   --disable-shared \
+  --enable-version3 \
   --enable-pic \
   --disable-doc \
   --disable-programs \
   \
-  --enable-ohcodec \
-  --enable-libdav1 \
+  --enable-cross-compile \
+  --cc="$CC" \
+  --extra-cflags="-I$DEST/include" \
+  --extra-ldflags="-L$DEST/lib" \
+  --enable-libdav1d \
   --enable-mbedtls \
   \
+  --disable-devices \
+  --disable-avdevice \
   --disable-muxers \
   --disable-encoders \
-  --enable-encoders=png,mjpeg \
-
+  --enable-ohcodec \
+  --enable-encoder=png,mjpeg
 make -j$CORES
 make install
 
