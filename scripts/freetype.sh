@@ -2,7 +2,7 @@
 
 set -eu
 
-pushd $HOME/libmpv/dav1d
+pushd $HOME/libmpv/freetype
 
 if [ "$1" == "build" ]; then
 	true
@@ -18,10 +18,7 @@ cd .build
 
 meson setup .. \
   --cross-file $GITHUB_ACTION_PATH/crossfiles/arm64-crossfile.ini \
-  --prefix=$DEST \
-  -Db_lto=true \
-  -Denable_tests=false \
-  -Denable_tools=false
+  --prefix=$DEST
 ninja -j$CORES
 ninja install
 
