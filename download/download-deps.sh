@@ -4,6 +4,8 @@ set -eu
 
 . ./download/deps-version.sh
 
+#cp -p ./crossfiles/arm64-crossfile.ini $HOME/libmpv
+
 cd $HOME/libmpv
 
 # mbedtls

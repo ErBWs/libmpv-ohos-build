@@ -2,17 +2,22 @@
 
 set -eu
 
-pushd $HOME/libmpv/dovi_tools
+pushd $HOME/libmpv/dovi_tools/dolby_vision
 
 if [ "$1" == "build" ]; then
 	true
 elif [ "$1" == "clean" ]; then
-	rm -rf .build
+	cargo clean
 	exit 0
 else
 	exit 1
 fi
 
-ohrs build --release --static --dest .build --arch aarch
+cargo cinstall \
+  --release \
+  --target=aarch64-unknown-linux-ohos \
+  --library-type=staticlib \
+  --prefix=$DEST \
+  --libdir=lib
 
 popd
