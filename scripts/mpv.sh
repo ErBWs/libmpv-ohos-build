@@ -20,10 +20,11 @@ meson setup .. \
   --cross-file $GITHUB_ACTION_PATH/crossfiles/arm64-crossfile.ini \
   --prefix=$DEST/mpv \
   --default-library shared \
-	-Dgpl=false \
-	-Dbuild-date=false \
- 	-Dcplayer=false \
- 	-Dmanpage-build=disabled
+  -Dopensles=disabled \
+  -Dgpl=false \
+  -Dbuild-date=false \
+  -Dcplayer=false \
+  -Dmanpage-build=disabled
 ninja -j$CORES
 ninja install
 

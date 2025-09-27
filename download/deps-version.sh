@@ -3,7 +3,7 @@
 set -eu
 
 # OpenHarmony SDK version
-V_SDK=5.1.0-Release
+V_SDK=6.0-Release
 
 # FFmpeg
 V_MBEDTLS=3.6.4
