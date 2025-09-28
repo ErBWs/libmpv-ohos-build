@@ -5,10 +5,12 @@ set -eu
 export DEST=$HOME/libmpv/arm64-build
 mkdir -p $DEST
 
-export OHOS_SDK=$HOME/libmpv/sdk/ohos-sdk/linux
-export OHOS_NDK_HOME=$HOME/libmpv/sdk/ohos-sdk/linux
+export OHOS_SDK=/sdk/linux
+export OHOS_NDK_HOME=/sdk/linux
 export PATH=$OHOS_NDK_HOME/native/build-tools/cmake/bin:$PATH
 export PKG_CONFIG_PATH=$DEST/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$OHOS_NDK_HOME/native/sysroot/usr/lib
+export PKG_CONFIG_INCLUDEDIR=$OHOS_NDK_HOME/native/sysroot/usr/include
 export CORES=$(nproc)
 
 export AS=$OHOS_NDK_HOME/native/llvm/bin/llvm-as

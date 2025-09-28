@@ -17,9 +17,10 @@ mkdir -p .build
 cd .build
 
 meson setup .. \
-  --cross-file $GITHUB_ACTION_PATH/crossfiles/arm64-crossfile.ini \
+  --cross-file $GITHUB_WORKSPACE/crossfiles/arm64-crossfile.ini \
   --prefix=$DEST/mpv \
   --default-library shared \
+  --strip \
   -Dopensles=disabled \
   -Dgpl=false \
   -Dbuild-date=false \

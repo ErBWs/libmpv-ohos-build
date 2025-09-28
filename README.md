@@ -1,5 +1,7 @@
 # libmpv-ohos-build
 
+暂时不提供编译好的库文件，因为还不确定是否可以正常工作
+
 ```shell
 sudo apt update
 
