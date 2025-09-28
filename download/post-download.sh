@@ -5,6 +5,8 @@ set -eu
 export DEST=$HOME/libmpv/arm64-build
 mkdir -p $DEST
 
+ln -s $(pwd)/crossfiles/arm64-crossfile.ini $HOME/libmpv
+
 export OHOS_SDK=/sdk/linux
 export OHOS_NDK_HOME=/sdk/linux
 export PATH=$OHOS_NDK_HOME/native/build-tools/cmake/bin:$PATH

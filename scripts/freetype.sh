@@ -17,7 +17,7 @@ mkdir -p .build
 cd .build
 
 meson setup .. \
-  --cross-file $GITHUB_WORKSPACE/crossfiles/arm64-crossfile.ini \
+  --cross-file $HOME/libmpv/arm64-crossfile.ini \
   --prefix=$DEST
 ninja -j$CORES
 ninja install
