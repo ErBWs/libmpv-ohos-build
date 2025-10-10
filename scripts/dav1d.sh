@@ -25,4 +25,8 @@ meson setup .. \
 ninja -j$CORES
 ninja install
 
+cd $DEST/mpv/lib
+rm libmpv.so libmpv.so.[0-9]
+mv libmpv.so* libmpv.so
+
 popd

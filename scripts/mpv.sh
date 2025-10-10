@@ -22,6 +22,8 @@ meson setup .. \
   --default-library shared \
   --strip \
   -Dopensles=disabled \
+  -Dohaudio=enabled \
+  -Degl=enabled \
   -Dgpl=false \
   -Dbuild-date=false \
   -Dcplayer=false \
