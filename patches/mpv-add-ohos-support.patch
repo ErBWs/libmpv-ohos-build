@@ -244,7 +244,7 @@ index 0000000..f9d623e
 +    .options_prefix = "ohaudio",
 +};
 diff --git a/meson.build b/meson.build
-index 7572769..6f5f3bb 100644
+index 7572769..62a0bc5 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -857,6 +857,13 @@ if features['opensles']
@@ -261,8 +261,21 @@ index 7572769..6f5f3bb 100644
  oss_opt = get_option('oss-audio').require(
      get_option('gpl'),
      error_message: 'the build is not GPL!',
+@@ -1220,6 +1227,12 @@ if features['egl-android']
+     sources += files('video/out/opengl/context_android.c')
+ endif
+ 
++egl_ohos = cc.find_library('EGL', required: get_option('egl-ohos'))
++features += {'egl': egl_ohos.found() and gl_allowed}
++if features['egl']
++    dependencies += egl
++endif
++
+ egl_drm = get_option('egl-drm').require(
+     features['drm'] and features['egl'] and features['gbm'] and gl_allowed,
+     error_message: 'either drm, egl, or gbm could not be found!',
 diff --git a/meson.options b/meson.options
-index dae0a33..277e69e 100644
+index dae0a33..ebb7907 100644
 --- a/meson.options
 +++ b/meson.options
 @@ -46,6 +46,7 @@ option('avfoundation', type: 'feature', value: 'auto', description: 'AVFoundatio
@@ -273,3 +286,11 @@ index dae0a33..277e69e 100644
  option('oss-audio', type: 'feature', value: 'auto', description: 'OSSv4 audio output')
  option('pipewire', type: 'feature', value: 'auto', description: 'PipeWire audio output')
  option('pulse', type: 'feature', value: 'auto', description: 'PulseAudio audio output')
+@@ -62,6 +63,7 @@ option('dmabuf-wayland', type: 'feature', value: 'auto', description: 'dmabuf-wa
+ option('drm', type: 'feature', value: 'auto', description: 'Direct Rendering Manager (DRM)')
+ option('egl', type: 'feature', value: 'auto', description: 'EGL 1.4')
+ option('egl-android', type: 'feature', value: 'auto', description: 'Android EGL support')
++option('egl-ohos', type: 'feature', value: 'auto', description: 'HarmonyOS EGL support')
+ option('egl-angle', type: 'feature', value: 'auto', description: 'OpenGL ANGLE headers')
+ option('egl-angle-lib', type: 'feature', value: 'auto', description: 'OpenGL Win32 ANGLE library')
+ option('egl-angle-win32', type: 'feature', value: 'auto', description: 'OpenGL Win32 ANGLE backend')

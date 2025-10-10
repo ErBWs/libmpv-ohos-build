@@ -23,12 +23,16 @@ meson setup .. \
   --strip \
   -Dopensles=disabled \
   -Dohaudio=enabled \
-  -Degl=enabled \
+  -Degl-ohos=enabled \
   -Dgpl=false \
   -Dbuild-date=false \
   -Dcplayer=false \
   -Dmanpage-build=disabled
 ninja -j$CORES
 ninja install
+
+cd $DEST/mpv/lib
+rm libmpv.so libmpv.so.[0-9]
+mv libmpv.so* libmpv.so
 
 popd
