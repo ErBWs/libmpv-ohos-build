@@ -22,7 +22,7 @@ meson setup .. \
   --default-library shared \
   --strip \
   -Dopensles=disabled \
-  -Dohaudio=enabled \
+  -Dohos=enabled \
   -Degl-ohos=enabled \
   -Dgpl=false \
   -Dbuild-date=false \
