@@ -34,6 +34,9 @@ fi
 # dovi_tools
 [ ! -d dovi_tools ] && git clone --depth 1 -b $V_DOVI_TOOLS https://github.com/quietvoid/dovi_tool.git dovi_tools
 
+# lcms
+[ ! -d lcms ] && git clone --depth 1 -b $V_LCMS https://github.com/mm2/Little-CMS.git lcms
+
 # ffmpeg
 [ ! -d ffmpeg ] && git clone --depth 1 -b $V_FFMPEG https://github.com/FFmpeg/FFmpeg.git ffmpeg
 

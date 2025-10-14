@@ -2,7 +2,7 @@
 
 set -eu
 
-pushd $HOME/libmpv/libplacebo
+pushd $HOME/libmpv/lcms
 
 if [ "$1" == "build" ]; then
 	true
@@ -19,11 +19,7 @@ cd .build
 meson setup .. \
   --cross-file $HOME/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
-  -Ddovi=enabled \
-  -Dlcms=enabled \
-  -Dvulkan=enabled \
-  -Dopengl=enabled \
-  -Ddemos=false
+  -Dtests=disabled
 ninja -j$CORES
 ninja install
 
