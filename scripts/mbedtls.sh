@@ -16,10 +16,4 @@ fi
 make -j$CORES no_test
 make DESTDIR=$DEST install
 
-#cd ../pkgconfig
-#cmake . -DCMAKE_INSTALL_PREFIX=$DEST \
-#  -DCMAKE_INSTALL_INCLUDEDIR=include \
-#  -DCMAKE_INSTALL_LIBDIR=lib
-#make install
-
 popd

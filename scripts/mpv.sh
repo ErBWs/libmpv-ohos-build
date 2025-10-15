@@ -24,6 +24,8 @@ meson setup .. \
   -Dopensles=disabled \
   -Dohos=enabled \
   -Degl-ohos=enabled \
+  -Dvulkan=enabled \
+  -Dshaderc=enabled \
   -Dgpl=false \
   -Dbuild-date=false \
   -Dcplayer=false \

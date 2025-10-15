@@ -37,6 +37,14 @@ fi
 # lcms
 [ ! -d lcms ] && git clone --depth 1 -b $V_LCMS https://github.com/mm2/Little-CMS.git lcms
 
+# shaderc
+if [ ! -d shaderc ]; then
+  git clone --depth 1 -b $V_SHADERC https://github.com/google/shaderc.git shaderc
+  cd shaderc
+  ./utils/git-sync-deps
+  cd ..
+fi
+
 # ffmpeg
 [ ! -d ffmpeg ] && git clone --depth 1 -b $V_FFMPEG https://github.com/FFmpeg/FFmpeg.git ffmpeg
 

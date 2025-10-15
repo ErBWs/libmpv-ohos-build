@@ -18,6 +18,7 @@ V_HARFBUZZ=11.4.5
 # libplacebo
 V_DOVI_TOOLS=2.3.1
 V_LCMS=lcms2.17
+V_SHADERC=v2025.4
 
 # mpv
 V_FFMPEG=n8.0

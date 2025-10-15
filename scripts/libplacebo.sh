@@ -21,6 +21,7 @@ meson setup .. \
   --prefix=$DEST \
   -Ddovi=enabled \
   -Dlcms=enabled \
+  -Dshaderc=enabled \
   -Dvulkan=enabled \
   -Dopengl=enabled \
   -Ddemos=false
