@@ -31,6 +31,9 @@ fi
 # harfbuzz
 [ ! -d harfbuzz ] && git clone --depth 1 -b $V_HARFBUZZ https://github.com/harfbuzz/harfbuzz.git harfbuzz
 
+# fontconfig
+[ ! -d fontconfig ] && git clone --depth 1 -b $V_FONTCONFIG https://gitlab.freedesktop.org/fontconfig/fontconfig.git fontconfig
+
 # dovi_tools
 [ ! -d dovi_tools ] && git clone --depth 1 -b $V_DOVI_TOOLS https://github.com/quietvoid/dovi_tool.git dovi_tools
 
@@ -53,9 +56,6 @@ fi
 
 # libplacebo
 [ ! -d libplacebo ] && git clone --depth 1 -b $V_LIBPLACEBO --recursive https://code.videolan.org/videolan/libplacebo.git libplacebo
-
-# uchardet
-[ ! -d uchardet ] && git clone --depth 1 -b $V_UCHARDET https://gitlab.freedesktop.org/uchardet/uchardet.git uchardet
 
 # mpv
 [ ! -d mpv ]  && git clone --depth 1 -b $V_MPV https://github.com/mpv-player/mpv.git mpv

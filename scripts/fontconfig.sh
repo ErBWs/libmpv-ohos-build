@@ -2,7 +2,7 @@
 
 set -eu
 
-pushd $HOME/libmpv/libass
+pushd $HOME/libmpv/fontconfig
 
 if [ "$1" == "build" ]; then
 	true
@@ -18,14 +18,18 @@ fi
 mkdir -p .build
 cd .build
 
-../configure \
+CFLAGS="-Wno-int-conversion" ../configure \
   --prefix=$DEST \
   --host=aarch64-linux \
   --with-pic \
   --enable-static \
-  --disable-shared
+  --disable-shared \
+  --enable-libxml2 \
+  --disable-docs \
+  --with-default-fonts=/system/fonts \
+  --disable-cache-build \
+  --enable-silent-rules
 make -j$CORES
 make install
-
 
 popd

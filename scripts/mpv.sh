@@ -35,6 +35,7 @@ ninja install
 
 cd $DEST/mpv/lib
 rm libmpv.so libmpv.so.[0-9]
+rm ./pkgconfig/mpv.pc
 mv libmpv.so* libmpv.so.2
 
 popd
