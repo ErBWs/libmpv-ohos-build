@@ -8,6 +8,8 @@ V_SDK=6.0-Release
 # FFmpeg
 V_MBEDTLS=3.6.4
 V_DAV1D=1.5.1
+
+# fontconfig
 V_LIBXML2=v2.15.1
 
 # libass

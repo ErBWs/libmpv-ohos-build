@@ -18,14 +18,15 @@ fi
 mkdir -p .build
 cd .build
 
+# to enable fontconfig, remove --disable-require-system-font-provider
 ../configure \
   --prefix=$DEST \
   --host=aarch64-linux \
   --with-pic \
   --enable-static \
-  --disable-shared
+  --disable-shared \
+  --disable-require-system-font-provider
 make -j$CORES
 make install
-
 
 popd

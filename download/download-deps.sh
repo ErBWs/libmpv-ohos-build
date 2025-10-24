@@ -4,9 +4,9 @@ set -eu
 
 . ./download/deps-version.sh
 
-#cp -p ./crossfiles/arm64-crossfile.ini $HOME/libmpv
+mkdir -p $HOME/libmpv
 
-cd $HOME/libmpv
+pushd $HOME/libmpv
 
 # mbedtls
 if [ ! -d mbedtls ]; then
@@ -19,8 +19,8 @@ fi
 # dav1d
 [ ! -d dav1d ] && git clone --depth 1 -b $V_DAV1D https://code.videolan.org/videolan/dav1d.git dav1d
 
-# libxml2
-[ ! -d libxml2 ] && git clone --depth 1 -b $V_LIBXML2 --recursive https://gitlab.gnome.org/GNOME/libxml2.git libxml2
+# libxml2 - disabled
+#[ ! -d libxml2 ] && git clone --depth 1 -b $V_LIBXML2 --recursive https://gitlab.gnome.org/GNOME/libxml2.git libxml2
 
 # fribidi
 [ ! -d fribidi ] && git clone --depth 1 -b $V_FRIBIDI https://github.com/fribidi/fribidi.git fribidi
@@ -31,8 +31,8 @@ fi
 # harfbuzz
 [ ! -d harfbuzz ] && git clone --depth 1 -b $V_HARFBUZZ https://github.com/harfbuzz/harfbuzz.git harfbuzz
 
-# fontconfig
-[ ! -d fontconfig ] && git clone --depth 1 -b $V_FONTCONFIG https://gitlab.freedesktop.org/fontconfig/fontconfig.git fontconfig
+# fontconfig - disabled
+#[ ! -d fontconfig ] && git clone --depth 1 -b $V_FONTCONFIG https://gitlab.freedesktop.org/fontconfig/fontconfig.git fontconfig
 
 # dovi_tools
 [ ! -d dovi_tools ] && git clone --depth 1 -b $V_DOVI_TOOLS https://github.com/quietvoid/dovi_tool.git dovi_tools
@@ -59,3 +59,5 @@ fi
 
 # mpv
 [ ! -d mpv ]  && git clone --depth 1 -b $V_MPV https://github.com/mpv-player/mpv.git mpv
+
+popd

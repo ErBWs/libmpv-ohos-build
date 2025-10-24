@@ -18,6 +18,7 @@ cd .build
 
 cmake -L \
   -DCMAKE_TOOLCHAIN_FILE=$OHOS_NDK_HOME/native/build/cmake/ohos.toolchain.cmake \
+  -DBUILD_SHARED_LIBS=OFF \
   -DCMAKE_INSTALL_PREFIX=$DEST \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_SKIP_RPATH=TRUE \
@@ -30,5 +31,9 @@ cmake -L \
   ..
 ninja -j$CORES
 ninja install
+
+cd $DEST/lib/pkgconfig
+mv shaderc.pc shaderc_shared.pc
+mv shaderc_combined.pc shaderc.pc
 
 popd
