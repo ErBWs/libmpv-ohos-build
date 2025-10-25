@@ -58,6 +58,6 @@ fi
 [ ! -d libplacebo ] && git clone --depth 1 -b $V_LIBPLACEBO --recursive https://code.videolan.org/videolan/libplacebo.git libplacebo
 
 # mpv
-[ ! -d mpv ]  && git clone --depth 1 -b $V_MPV https://github.com/mpv-player/mpv.git mpv
+[ ! -d mpv ]  && git clone --depth 1 -b $V_MPV https://github.com/ErBWs/mpv.git mpv
 
 popd
