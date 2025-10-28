@@ -19,15 +19,10 @@ cd .build
 meson setup .. \
   --cross-file $HOME/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
-  --default-library shared \
   -Ddocs=disabled \
   -Dzlib=enabled \
   -Dsax1=enabled
 ninja -j$CORES
 ninja install
-
-cd $DEST/lib
-rm libxml2.so libxml2.so.[0-9][0-9]
-mv libxml2.so* libxml2.so.16
 
 popd
