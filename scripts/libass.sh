@@ -13,20 +13,18 @@ else
 	exit 1
 fi
 
-[ ! -f configure ] && ./autogen.sh
-
 mkdir -p .build
 cd .build
 
-# to enable fontconfig, remove --disable-require-system-font-provider
-../configure \
+meson setup .. \
+  --cross-file $HOME/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
-  --host=aarch64-linux \
-  --with-pic \
-  --enable-static \
-  --disable-shared \
-  --disable-require-system-font-provider
-make -j$CORES
-make install
+  -Dtest=disabled \
+  -Dcompare=disabled \
+  -Dprofile=disabled \
+  -Dfuzz=disabled \
+  -Dfontconfig=enabled
+ninja -j$CORES
+ninja install
 
 popd

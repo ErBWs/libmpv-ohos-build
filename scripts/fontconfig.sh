@@ -13,23 +13,18 @@ else
 	exit 1
 fi
 
-[ ! -f configure ] && ./autogen.sh
-
 mkdir -p .build
 cd .build
 
-CFLAGS="-Wno-int-conversion" ../configure \
+meson setup .. \
+  --cross-file $HOME/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
-  --host=aarch64-linux \
-  --with-pic \
-  --enable-static \
-  --disable-shared \
-  --enable-libxml2 \
-  --disable-docs \
-  --with-default-fonts=/system/fonts \
-  --disable-cache-build \
-  --enable-silent-rules
-make -j$CORES
-make install
+  -Ddoc=disabled \
+  -Dtests=disabled \
+  -Dcache-build=disabled \
+  -Dxml-backend=libxml2 \
+  -Ddefault-fonts-dirs=/system/fonts
+ninja -j$CORES
+ninja install
 
 popd
