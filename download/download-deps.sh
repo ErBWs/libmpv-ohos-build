@@ -57,6 +57,14 @@ fi
 # libplacebo
 [ ! -d libplacebo ] && git clone --depth 1 -b $V_LIBPLACEBO --recursive https://code.videolan.org/videolan/libplacebo.git libplacebo
 
+# lua
+if [ ! -d lua ]; then
+	mkdir lua
+	curl -fsSL https://www.lua.org/ftp/lua-$V_LUA.tar.gz > lua.tar.gz
+  tar -C lua --strip-components=1 -zxf lua.tar.gz
+  rm lua.tar.gz
+fi
+
 # mpv
 [ ! -d mpv ]  && git clone --depth 1 -b $V_MPV https://github.com/ErBWs/mpv.git mpv
 

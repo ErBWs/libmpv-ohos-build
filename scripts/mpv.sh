@@ -26,6 +26,7 @@ meson setup .. \
   -Degl-ohos=enabled \
   -Dvulkan=enabled \
   -Dshaderc=enabled \
+  -Dlua=enabled \
   -Dgpl=false \
   -Dbuild-date=false \
   -Dcplayer=false \
