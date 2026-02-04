@@ -2,6 +2,8 @@
 
 set -eu
 
+mkdir -p ./libmpv/arm64-build
+
 if [ "$(uname -s)" = "Linux" ]; then
   ./download/download-sdk.sh
   ln -s ./crossfiles/arm64-crossfile-linux.ini $ROOT_DIR/libmpv/arm64-crossfile.ini

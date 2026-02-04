@@ -6,8 +6,6 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 
 . $ROOT_DIR/download/deps-version.sh
 
-mkdir -p $ROOT_DIR/libmpv/arm64-build
-
 pushd $ROOT_DIR/libmpv
 
 # mbedtls
