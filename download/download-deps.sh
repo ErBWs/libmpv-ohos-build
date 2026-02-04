@@ -2,11 +2,13 @@
 
 set -eu
 
-. ./download/deps-version.sh
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 
-mkdir -p $HOME/libmpv
+. $ROOT_DIR/download/deps-version.sh
 
-pushd $HOME/libmpv
+mkdir -p $ROOT_DIR/libmpv/arm64-build
+
+pushd $ROOT_DIR/libmpv
 
 # mbedtls
 if [ ! -d mbedtls ]; then

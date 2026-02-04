@@ -2,7 +2,11 @@
 
 set -eu
 
-pushd $HOME/libmpv/dovi_tools/dolby_vision
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+. $ROOT_DIR/env.sh
+
+pushd $ROOT_DIR/libmpv/dovi_tools/dolby_vision
 
 if [ "$1" == "build" ]; then
 	true

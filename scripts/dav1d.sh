@@ -2,7 +2,11 @@
 
 set -eu
 
-pushd $HOME/libmpv/dav1d
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+. $ROOT_DIR/env.sh
+
+pushd $ROOT_DIR/libmpv/dav1d
 
 if [ "$1" == "build" ]; then
 	true
@@ -17,7 +21,7 @@ mkdir -p .build
 cd .build
 
 meson setup .. \
-  --cross-file $HOME/libmpv/arm64-crossfile.ini \
+  --cross-file $ROOT_DIR/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
   -Db_lto=true \
   -Denable_tests=false \

@@ -2,7 +2,13 @@
 
 set -eu
 
-pushd $HOME/libmpv/mbedtls
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+. $ROOT_DIR/env.sh
+
+pushd $ROOT_DIR/libmpv/mbedtls
 
 if [ "$1" == "build" ]; then
 	true

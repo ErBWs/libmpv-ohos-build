@@ -6,7 +6,7 @@ set -eu
 
 pushd /
 
-# Download OpenHarmony SDK
+echo "Downloading OpenHarmony SDK..."
 sudo curl -fsSL https://repo.huaweicloud.com/openharmony/os/$V_SDK/ohos-sdk-windows_linux-public.tar.gz -o sdk.tar.gz
 sudo mkdir -p sdk
 sudo tar -C sdk -zxf sdk.tar.gz

@@ -2,7 +2,11 @@
 
 set -eu
 
-pushd $HOME/libmpv/fribidi
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+. $ROOT_DIR/env.sh
+
+pushd $ROOT_DIR/libmpv/fribidi
 
 if [ "$1" == "build" ]; then
 	true
@@ -17,7 +21,7 @@ mkdir -p .build
 cd .build
 
 meson setup .. \
-  --cross-file $HOME/libmpv/arm64-crossfile.ini \
+  --cross-file $ROOT_DIR/libmpv/arm64-crossfile.ini \
   --prefix=$DEST \
   -Dtests=false \
   -Ddocs=false

@@ -2,7 +2,11 @@
 
 set -eu
 
-pushd $HOME/libmpv/ffmpeg
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
+
+. $ROOT_DIR/env.sh
+
+pushd $ROOT_DIR/libmpv/ffmpeg
 
 if [ "$1" == "build" ]; then
 	true
@@ -34,6 +38,7 @@ cd .build
   --extra-ldflags="-L$DEST/lib" \
   --enable-libdav1d \
   --enable-mbedtls \
+  --disable-vulkan \
   \
   --disable-devices \
   --disable-avdevice \

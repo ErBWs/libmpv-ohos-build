@@ -2,18 +2,23 @@
 
 set -eu
 
-export DEST=$HOME/libmpv/arm64-build
-mkdir -p $DEST
+ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 
-ln -s $(pwd)/crossfiles/arm64-crossfile.ini $HOME/libmpv
+if [ "$(uname -s)" = "Linux" ]; then
+  export OHOS_SDK=/sdk/linux
+  export OHOS_NDK_HOME=/sdk/linux
+  export CORES=$(nproc)
+elif [ "$(uname -s)" = "Darwin" ]; then
+  export OHOS_SDK=/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony
+  export OHOS_NDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony
+  export CORES=$(sysctl -n hw.ncpu)
+fi
 
-export OHOS_SDK=/sdk/linux
-export OHOS_NDK_HOME=/sdk/linux
+export DEST=$ROOT_DIR/libmpv/arm64-build
 export PATH=$OHOS_NDK_HOME/native/build-tools/cmake/bin:$PATH
 export PKG_CONFIG_PATH=$DEST/lib/pkgconfig
 export PKG_CONFIG_LIBDIR=$OHOS_NDK_HOME/native/sysroot/usr/lib
 export PKG_CONFIG_INCLUDEDIR=$OHOS_NDK_HOME/native/sysroot/usr/include
-export CORES=$(nproc)
 
 export AS=$OHOS_NDK_HOME/native/llvm/bin/llvm-as
 export CC="$OHOS_NDK_HOME/native/llvm/bin/clang --target=aarch64-linux-ohos --sysroot=$OHOS_NDK_HOME/native/sysroot"
