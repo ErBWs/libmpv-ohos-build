@@ -5,11 +5,9 @@ set -eu
 ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 
 if [ "$(uname -s)" = "Linux" ]; then
-  export OHOS_SDK=/sdk/linux
   export OHOS_NDK_HOME=/sdk/linux
   export CORES=$(nproc)
 elif [ "$(uname -s)" = "Darwin" ]; then
-  export OHOS_SDK=/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony
   export OHOS_NDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony
   export CORES=$(sysctl -n hw.ncpu)
 fi
