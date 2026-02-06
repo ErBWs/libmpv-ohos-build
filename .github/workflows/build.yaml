@@ -14,7 +14,7 @@ on:
           - warning
           - debug
       release:
-        description: 'Whether creates a release'
+        description: 'Create a GitHub release'
         required: true
         type: boolean
         default: false
