@@ -36,7 +36,7 @@ jobs:
 
       - name: Bundle
         run: |
-          chmod +x */*.sh
+          sudo chmod +x */*.sh
           ./bundle.sh
         shell: bash
 
