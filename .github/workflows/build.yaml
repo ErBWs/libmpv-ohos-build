@@ -1,0 +1,65 @@
+name: build libmpv for ohos
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      release:
+        description: 'Whether creates a release'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          pip3 install meson
+        shell: bash
+
+      - name: Bundle
+        run: |
+          chmod +x */*.sh
+          ./bundle.sh
+        shell: bash
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: |
+            ./libmpv/arm64-build/*.zip
+
+      - name: Prepare release
+        if: ${{ github.event.inputs.release == 'true' }}
+        run: |
+          echo "RELEASE_TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        if: ${{ github.event.inputs.release == 'true' }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TAG }}
+          body: |
+            **Workflow run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          files: |
+            ./libmpv/arm64-build/*.zip
