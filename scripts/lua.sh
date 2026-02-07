@@ -9,7 +9,7 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 pushd $ROOT_DIR/libmpv/lua
 
 if [ "$1" == "build" ]; then
-	true
+	echo -e "\nBuilding lua..."
 elif [ "$1" == "clean" ]; then
 	make clean
 	exit 0

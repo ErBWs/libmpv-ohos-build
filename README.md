@@ -11,6 +11,7 @@ Scripts are compatible with macOS, Linux and WSL, Windows is not supported.
 - make
 - python3
 - pkg-conf
+- gperf
 - meson
 
 ohos sdk is automatically downloaded on Linux / WSL, but you need to manually download DevEco Studio on your mac.
@@ -18,5 +19,6 @@ ohos sdk is automatically downloaded on Linux / WSL, but you need to manually do
 ## Build
 
 ```shell
+chmod +x *.sh */*.sh
 ./bundle.sh
 ```

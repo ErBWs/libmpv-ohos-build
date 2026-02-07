@@ -9,7 +9,7 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 pushd $ROOT_DIR/libmpv/dovi_tools/dolby_vision
 
 if [ "$1" == "build" ]; then
-	true
+	echo -e "\nBuilding dovi tools..."
 elif [ "$1" == "clean" ]; then
 	cargo clean
 	exit 0

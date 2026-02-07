@@ -9,7 +9,7 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 pushd $ROOT_DIR/libmpv/lcms
 
 if [ "$1" == "build" ]; then
-	true
+	echo -e "\nBuilding lcms..."
 elif [ "$1" == "clean" ]; then
 	rm -rf .build
 	exit 0

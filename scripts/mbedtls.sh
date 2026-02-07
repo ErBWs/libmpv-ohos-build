@@ -9,7 +9,7 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 pushd $ROOT_DIR/libmpv/mbedtls
 
 if [ "$1" == "build" ]; then
-	true
+	echo -e "\nBuilding mbedtls..."
 elif [ "$1" == "clean" ]; then
 	make clean
 	exit 0

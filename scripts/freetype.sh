@@ -9,7 +9,7 @@ ROOT_DIR=$(cd $(dirname "$0")/..; pwd)
 pushd $ROOT_DIR/libmpv/freetype
 
 if [ "$1" == "build" ]; then
-	true
+	echo -e "\nBuilding freetype..."
 elif [ "$1" == "clean" ]; then
 	rm -rf .build
 	exit 0
