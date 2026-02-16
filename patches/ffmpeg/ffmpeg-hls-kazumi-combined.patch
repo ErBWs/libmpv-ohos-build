@@ -1,0 +1,199 @@
+diff --git a/libavformat/hls.c b/libavformat/hls.c
+index fe008ee..34e43da 100644
+--- a/libavformat/hls.c
++++ b/libavformat/hls.c
+@@ -84,6 +84,8 @@ struct segment {
+     uint8_t iv[16];
+     /* associated Media Initialization Section, treated as a segment */
+     struct segment *init_section;
++    /* Kazumi: Segment follows a DISCONTINUITY tag */
++    int after_discontinuity;
+ };
+ 
+ struct rendition;
+@@ -222,6 +224,7 @@ typedef struct HLSContext {
+     AVIOInterruptCB *interrupt_callback;
+     AVDictionary *avio_opts;
+     AVDictionary *seg_format_opts;
++    int seg_allow_img;
+     char *allowed_extensions;
+     char *allowed_segment_extensions;
+     int extension_picky;
+@@ -232,6 +235,12 @@ typedef struct HLSContext {
+     int seg_max_retry;
+     AVIOContext *playlist_pb;
+     HLSCryptoContext  crypto_ctx;
++    /* Kazumi: Ad filtering based on PTS discontinuity */
++    int hls_ad_filter;              /* Enable PTS-based ad filtering */
++    int has_discontinuity;          /* M3U8 contains #EXT-X-DISCONTINUITY */
++    int64_t last_main_pts;          /* Last PTS from main content */
++    int in_ad_segment;              /* Currently in ad segment */
++    int after_seek;                 /* Flag to ignore PTS jump after seek */
+ } HLSContext;
+ 
+ static void free_segment_dynarray(struct segment **segments, int n_segments)
+@@ -799,6 +808,8 @@ static int parse_playlist(HLSContext *c, const char *url,
+     struct segment **prev_segments = NULL;
+     int prev_n_segments = 0;
+     int64_t prev_start_seq_no = -1;
++    /* Kazumi: Track if next segment follows DISCONTINUITY */
++    int next_seg_after_discontinuity = 0;
+ 
+     if (is_http && !in && c->http_persistent && c->playlist_pb) {
+         in = c->playlist_pb;
+@@ -965,6 +976,15 @@ static int parse_playlist(HLSContext *c, const char *url,
+         } else if (av_strstart(line, "#EXT-X-ENDLIST", &ptr)) {
+             if (pls)
+                 pls->finished = 1;
++        } else if (av_strstart(line, "#EXT-X-DISCONTINUITY", NULL)) {
++            /* Kazumi: Mark that stream has discontinuity and next segment follows it */
++            if (c->hls_ad_filter) {
++                if (!c->has_discontinuity) {
++                    c->has_discontinuity = 1;
++                    av_log(c->ctx, AV_LOG_INFO, "Kazumi: Stream has DISCONTINUITY tags, ad filtering enabled\n");
++                }
++                next_seg_after_discontinuity = 1;
++            }
+         } else if (av_strstart(line, "#EXTINF:", &ptr)) {
+             is_segment = 1;
+             duration   = atof(ptr) * AV_TIME_BASE;
+@@ -1064,6 +1084,9 @@ static int parse_playlist(HLSContext *c, const char *url,
+                 }
+ 
+                 seg->init_section = cur_init_section;
++                /* Kazumi: Mark segment as following discontinuity */
++                seg->after_discontinuity = next_seg_after_discontinuity;
++                next_seg_after_discontinuity = 0;
+             }
+         }
+     }
+@@ -1993,6 +2016,8 @@ static int hls_read_header(AVFormatContext *s)
+     c->first_packet = 1;
+     c->first_timestamp = AV_NOPTS_VALUE;
+     c->cur_timestamp = AV_NOPTS_VALUE;
++    /* Kazumi: Initialize ad filtering state */
++    c->last_main_pts = AV_NOPTS_VALUE;
+ 
+     if ((ret = ffio_copy_url_options(s->pb, &c->avio_opts)) < 0)
+         return ret;
+@@ -2167,7 +2192,30 @@ static int hls_read_header(AVFormatContext *s)
+             pls->ctx->max_analyze_duration = s->max_analyze_duration > 0 ? s->max_analyze_duration : 4 * AV_TIME_BASE;
+             pls->ctx->interrupt_callback = s->interrupt_callback;
+             url = av_strdup(pls->segments[0]->url);
+-            ret = av_probe_input_buffer(&pls->pb.pub, &in_fmt, url, NULL, 0, 0);
++            unsigned skip = 0;
++            if (!c->seg_allow_img) {
++                uint8_t b[10] = { 0 }; // probe at most 10
++                avio_read(&pls->pb.pub, b, sizeof(b));
++                avio_seek(&pls->pb.pub, 0, SEEK_SET);
++                const AVProbeData pd = {
++                    .buf = b,               // png, gif read_probe only use this field
++                    .buf_size = sizeof(b),
++                };
++// optional: ffifmt(av_find_input_format("gif" or "gif_pipe" or "png_pipe"))->read_probe
++                int max_score = AVPROBE_SCORE_MAX - 2; // png_pipe, gif, gif_pipe score >= AVPROBE_SCORE_MAX - 1
++                const AVInputFormat* img_fmt = av_probe_input_format2(&pd, 1, &max_score);
++                if (img_fmt) {
++                    if (av_strstart(img_fmt->name, "png", NULL)) { // "png_pipe"
++                        skip = 3; // skip until ts sync byte 'G'(0x47)
++                        av_log(s, AV_LOG_INFO, "segments pretend to be png\n");
++                    } else if (av_strstart(img_fmt->name, "gif", NULL)) {    // "gif", "gif_pipe"
++                        skip = 10;
++                        av_log(s, AV_LOG_INFO, "segments pretend to be gif\n");
++                    }
++                }
++            }
++
++            ret = av_probe_input_buffer(&pls->pb.pub, &in_fmt, url, NULL, skip, 0);
+ 
+             for (int n = 0; n < pls->n_segments; n++)
+                 if (ret >= 0)
+@@ -2387,6 +2435,67 @@ static int hls_read_packet(AVFormatContext *s, AVPacket *pkt)
+                 }
+ 
+                 seg = current_segment(pls);
++
++                /* Kazumi: PTS-based ad filtering - filter ALL packets (audio & video) */
++                if (c->hls_ad_filter && c->has_discontinuity) {
++                    enum AVMediaType pkt_type = pls->ctx->streams[pls->pkt->stream_index]->codecpar->codec_type;
++                    int64_t current_pts = pls->pkt->pts != AV_NOPTS_VALUE ? pls->pkt->pts : pls->pkt->dts;
++                    int64_t pts_in_us = AV_NOPTS_VALUE;
++
++                    if (current_pts != AV_NOPTS_VALUE) {
++                        AVRational pkt_tb = pls->ctx->streams[pls->pkt->stream_index]->time_base;
++                        pts_in_us = av_rescale_q(current_pts, pkt_tb, AV_TIME_BASE_Q);
++                    }
++
++                    /* Skip ALL packets when in ad segment (check first, before any PTS processing) */
++                    if (c->in_ad_segment) {
++                        /* Check if this packet signals end of ad (use both audio and video) */
++                        if (pts_in_us != AV_NOPTS_VALUE) {
++                            int64_t pts_diff = pts_in_us - c->last_main_pts;
++                            /* Ad end: PTS returns to near main content PTS */
++                            if (pts_diff > -1000000 && pts_diff < 5000000) {
++                                c->in_ad_segment = 0;
++                                c->last_main_pts = pts_in_us;
++                                av_log(c->ctx, AV_LOG_INFO, "Kazumi: Ad ended at %s PTS=%"PRId64"ms\n",
++                                       pkt_type == AVMEDIA_TYPE_VIDEO ? "video" : "audio", pts_in_us/1000);
++                                /* Output this packet immediately - simple approach */
++                            } else {
++                                av_packet_unref(pls->pkt);
++                                continue;  /* Skip this ad packet */
++                            }
++                        } else {
++                            av_packet_unref(pls->pkt);
++                            continue;  /* Skip this ad packet */
++                        }
++                    }
++
++                    /* Only use VIDEO stream for ad detection (more reliable PTS) */
++                    if (pkt_type == AVMEDIA_TYPE_VIDEO && pts_in_us != AV_NOPTS_VALUE) {
++                        /* After seek: reset PTS tracking, don't detect as ad */
++                        if (c->after_seek) {
++                            c->last_main_pts = pts_in_us;
++                            c->after_seek = 0;
++                            av_log(c->ctx, AV_LOG_DEBUG, "Kazumi: After seek, reset PTS to %"PRId64"ms\n", pts_in_us/1000);
++                        } else if (c->last_main_pts != AV_NOPTS_VALUE) {
++                            int64_t pts_diff = pts_in_us - c->last_main_pts;
++
++                            /* Ad detection: PTS jumps backward significantly (> 1 sec) */
++                            if (pts_diff < -1000000) {
++                                c->in_ad_segment = 1;
++                                av_log(c->ctx, AV_LOG_INFO, "Kazumi: Ad detected! PTS jumped from %"PRId64"ms to %"PRId64"ms (diff: %"PRId64"ms)\n",
++                                       c->last_main_pts/1000, pts_in_us/1000, pts_diff/1000);
++                                av_packet_unref(pls->pkt);
++                                continue;  /* Skip this ad packet */
++                            }
++                            /* Normal progression: update PTS */
++                            c->last_main_pts = pts_in_us;
++                        } else {
++                            /* First packet: initialize last_main_pts */
++                            c->last_main_pts = pts_in_us;
++                        }
++                    }
++                }
++
+                 if (seg && seg->key_type == KEY_SAMPLE_AES && !strstr(pls->ctx->iformat->name, "mov")) {
+                     enum AVCodecID codec_id = pls->ctx->streams[pls->pkt->stream_index]->codecpar->codec_id;
+                     memcpy(c->crypto_ctx.iv, seg->iv, sizeof(seg->iv));
+@@ -2500,6 +2609,9 @@ static int hls_read_seek(AVFormatContext *s, int stream_index,
+                                int64_t timestamp, int flags)
+ {
+     HLSContext *c = s->priv_data;
++    /* Kazumi: Mark that we're seeking - will be cleared on first normal packet */
++    c->after_seek = 1;
++    c->in_ad_segment = 0;  /* Reset ad state on seek */
+     struct playlist *seek_pls = NULL;
+     int i, j;
+     int stream_subdemuxer_index;
+@@ -2664,6 +2776,10 @@ static const AVOption hls_options[] = {
+         OFFSET(seg_format_opts), AV_OPT_TYPE_DICT, {.str = NULL}, 0, 0, FLAGS},
+     {"seg_max_retry", "Maximum number of times to reload a segment on error.",
+      OFFSET(seg_max_retry), AV_OPT_TYPE_INT, {.i64 = 0}, 0, INT_MAX, FLAGS},
++    {"seg_allow_img", "Allow segments detected as gif and png images, 0 = disable, 1 = enable",
++        OFFSET(seg_allow_img), AV_OPT_TYPE_BOOL, { .i64 = 0}, 0, 1, FLAGS},
++    {"hls_ad_filter", "Filter ad segments based on PTS discontinuity (Kazumi)",
++        OFFSET(hls_ad_filter), AV_OPT_TYPE_BOOL, {.i64 = 0}, 0, 1, FLAGS},
+     {NULL}
+ };
+ 
