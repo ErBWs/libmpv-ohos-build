@@ -1,24 +1,9 @@
 # libmpv-ohos-build
 
-Build scripts of [libmpv](https://github.com/mpv-player/mpv) for ohos-arm64 (API 15+).
+在原仓库基础上增加了由 [@0Chencc](https://github.com/0Chencc) 为 Kazumi 编写的 [patch](./patches/ffmpeg/ffmpeg-hls-kazumi-combined.patch) 用于实现 hls 广告跳过功能。
 
-Scripts are compatible with macOS, Linux and WSL, Windows is not supported.
-
-## Build Dependencies
-
-- git
-- curl
-- make
-- python3
-- pkg-conf
-- gperf
-- meson
-
-ohos sdk is automatically downloaded on Linux / WSL, but you need to manually download DevEco Studio on your mac.
-
-## Build
+## 如何开启广告跳过
 
 ```shell
-chmod +x *.sh */*.sh
-./bundle.sh
+demuxer-lavf-o=hls_ad_filter=1
 ```
