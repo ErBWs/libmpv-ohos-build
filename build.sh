@@ -18,11 +18,9 @@ set -eu
 ./scripts/libass.sh build
 
 # libplacebo
-./scripts/dovi_tools.sh build
 ./scripts/lcms.sh build
 ./scripts/shaderc.sh build
 ./scripts/libplacebo.sh build
 
 # mpv
-./scripts/lua.sh build
 ./scripts/mpv.sh build
