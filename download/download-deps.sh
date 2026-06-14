@@ -67,14 +67,6 @@ else
   echo "fontconfig already exists, skipping."
 fi
 
-# dovi_tools
-if [ ! -d dovi_tools ]; then
-  echo "Downloading dovi_tools..."
-  git -c advice.detachedHead=false clone -q --depth 1 -b $V_DOVI_TOOLS https://github.com/quietvoid/dovi_tool.git dovi_tools > /dev/null
-else
-  echo "dovi_tools already exists, skipping."
-fi
-
 # lcms
 if [ ! -d lcms ]; then
   echo "Downloading lcms..."
@@ -116,17 +108,6 @@ if [ ! -d libplacebo ]; then
   git -c advice.detachedHead=false clone -q --depth 1 -b $V_LIBPLACEBO --recursive https://code.videolan.org/videolan/libplacebo.git libplacebo > /dev/null
 else
   echo "libplacebo already exists, skipping."
-fi
-
-# lua
-if [ ! -d lua ]; then
-  echo "Downloading lua..."
-  mkdir lua
-  curl -fsSL https://www.lua.org/ftp/lua-$V_LUA.tar.gz > lua.tar.gz
-  tar -C lua --strip-components=1 -zxf lua.tar.gz
-  rm lua.tar.gz
-else
-  echo "lua already exists, skipping."
 fi
 
 # mpv
