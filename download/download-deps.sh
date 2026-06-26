@@ -12,7 +12,7 @@ pushd $ROOT_DIR/libmpv
 if [ ! -d mbedtls ]; then
   echo "Downloading mbedtls..."
 	mkdir mbedtls
-	curl -fsSL https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-$V_MBEDTLS/mbedtls-$V_MBEDTLS.tar.bz2 > mbedtls.tar.bz2
+	wget -qO mbedtls.tar.bz2 https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-$V_MBEDTLS/mbedtls-$V_MBEDTLS.tar.bz2
   tar -C mbedtls --strip-components=1 -jxf mbedtls.tar.bz2
   rm mbedtls.tar.bz2
 else
